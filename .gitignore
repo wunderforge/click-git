@@ -1,5 +1,8 @@
 node_modules/
 out/
 .vscode-test/
+.agents/
+.codex/
 *.vsix
 npm-debug.log*
+*.log

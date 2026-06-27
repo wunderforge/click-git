@@ -2,18 +2,33 @@
 
 Click Git is a VS Code extension for Explorer context-menu Git commands scoped to the folder you select.
 
-MVP commands:
+## Features
 
-- Stage Folder
-- Unstage Folder
-- Commit Folder
-- Restore Folder
-- Status Folder
-- Diff Folder
-- Pull Repo
-- Pull Nested Repos
+- `Click Git: Stage Folder`
+- `Click Git: Unstage Folder`
+- `Click Git: Commit Folder`
+- `Click Git: Restore Folder`
+- `Click Git: Status Folder`
+- `Click Git: Diff Folder`
+- `Click Git: Pull Repo`
+- `Click Git: Pull Nested Repos`
 
 Git pull is repository-scoped. If you run Pull Repo from a subfolder, Click Git resolves the owning repository and pulls at the repo root. It does not claim to protect against Git commands run from terminals, VS Code SCM, other extensions, or external Git clients.
+
+## Safety Model
+
+- Folder-scoped commands use explicit Git pathspecs.
+- Pull commands are repository-scoped and default to `--ff-only`.
+- Restore keeps untracked files by default.
+- The extension requires a trusted workspace before it runs Git commands.
+- The MVP does not install Git hooks, mutate `skip-worktree`, rewrite commits, or change repository configuration.
+
+## Settings
+
+- `clickGit.pull.ffOnly`: use `--ff-only` for pull commands. Default: `true`.
+- `clickGit.pullNested.maxDepth`: maximum directory depth for nested repository discovery. Default: `4`.
+- `clickGit.pullNested.includeDirtyRepos`: pull nested repositories with uncommitted changes. Default: `false`.
+- `clickGit.commit.autoStageFolder`: stage the selected folder before committing it. Default: `true`.
 
 ## Development
 
@@ -55,3 +70,15 @@ Expected quick check:
 
 - Right-click `selected` and run `Click Git: Stage Folder`.
 - `git status --porcelain` should show `M  selected/file.txt` and ` M outside/file.txt`.
+
+## Publishing
+
+See [docs/PUBLISHING.md](docs/PUBLISHING.md).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+MIT. See [LICENSE](LICENSE).

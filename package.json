@@ -5,6 +5,18 @@
   "version": "0.0.1",
   "publisher": "wunderforge",
   "license": "MIT",
+  "keywords": [
+    "git",
+    "folder",
+    "explorer",
+    "context menu",
+    "multi repo",
+    "source control"
+  ],
+  "homepage": "https://github.com/wunderforge/click-git#readme",
+  "bugs": {
+    "url": "https://github.com/wunderforge/click-git/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/wunderforge/click-git.git"
@@ -157,6 +169,7 @@
     "test:vscode": "node ./out/tests/runTest.js",
     "prepackage": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Remove-Item -LiteralPath .\\click-git-0.0.1.vsix -Force -ErrorAction SilentlyContinue\"",
     "package": "vsce package --no-dependencies",
+    "vscode:prepublish": "npm run compile",
     "check": "npm run lint && npm run typecheck && npm run test:unit && npm run test:vscode && npm run package"
   },
   "devDependencies": {

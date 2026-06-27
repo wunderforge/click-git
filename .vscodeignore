@@ -1,6 +1,8 @@
 .git/**
 .agents/**
+.codex/**
 .vscode/**
+.gitignore
 AGENTS.md
 docs/**
 tests/**
@@ -13,3 +15,4 @@ scripts/**
 tsconfig.json
 eslint.config.mjs
 vitest.config.ts
+package-lock.json

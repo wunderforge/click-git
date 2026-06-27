@@ -2,6 +2,11 @@
 
 All notable changes to Click Git will be documented in this file.
 
+## 0.0.2
+
+- Added real demo media for the Marketplace and README.
+- Refreshed package metadata for the next publishable version.
+
 ## 0.0.1
 
 - Initial MVP.

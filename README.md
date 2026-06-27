@@ -8,6 +8,16 @@ Click Git is a small VS Code extension for people who live inside big workspaces
 
 ![Click Git demo](media/demo.gif)
 
+## See It In Action
+
+Right-click the folder you are already looking at, then run the Git action in place.
+
+![Click Git context menu in VS Code Explorer](media/screenshot-context-menu.png)
+
+When a command runs, Click Git keeps the feedback close to your VS Code workflow.
+
+![Click Git staging progress notification](media/screenshot-stage-progress.png)
+
 ## Why It Exists
 
 VS Code is great when you are focused on one repository. Real work is often messier.

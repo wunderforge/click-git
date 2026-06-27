@@ -47,6 +47,8 @@ Check public docs:
 - `SECURITY.md`
 - `CONTRIBUTING.md`
 - `media/demo.gif`
+- `media/screenshot-context-menu.png`
+- `media/screenshot-stage-progress.png`
 
 ## 3. Package A VSIX
 

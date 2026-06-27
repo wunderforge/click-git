@@ -2,6 +2,11 @@
 
 All notable changes to Click Git will be documented in this file.
 
+## 0.0.5
+
+- Polished the Marketplace and README opening copy around the multi-repo workspace pain point.
+- Simplified the extension description by keeping the top section focused on the hero and workflow demo.
+
 ## 0.0.4
 
 - Replaced Marketplace media with final branded command-flow artwork.

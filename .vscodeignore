@@ -4,6 +4,7 @@
 .vscode/**
 .gitignore
 AGENTS.md
+TODO.md
 docs/**
 tests/**
 src/**
@@ -14,6 +15,8 @@ out/tests/**
 out/vitest.config.*
 scripts/**
 media/icon.svg
+media/commands/**
+media/screenshot-*.png
 media/preview*/**
 media/final-preview*/**
 *.vsix

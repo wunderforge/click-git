@@ -1,6 +1,6 @@
 # Click Git TODO
 
-## 0.0.5 Candidate: Safe Push Repo
+## Next Candidate: Safe Push Repo
 
 Add `Click Git: Push Repo` as a repository-scoped command after the current Marketplace media release.
 

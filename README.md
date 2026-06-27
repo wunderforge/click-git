@@ -79,6 +79,13 @@ Git pull is repository-scoped. If you run Pull Repo from a subfolder, Click Git 
 - Restore keeps untracked files by default.
 - The extension requires a trusted workspace before it runs Git commands.
 - The MVP does not install Git hooks, mutate `skip-worktree`, rewrite commits, or change repository configuration.
+- Push is not implemented in the current release.
+
+## Roadmap: Safe Push
+
+`Click Git: Push Repo` is planned as a conservative follow-up. The current design is to resolve the clicked folder to its owning repository, then run plain `git push` from the repository root using the current branch's configured upstream.
+
+Click Git should not guess `origin`, choose among multiple remotes, set upstream automatically, force push, push tags, or bulk-push nested repositories in the first push release. If no upstream is configured, the command should fail closed and ask the user to set upstream with Git CLI or VS Code Source Control first.
 
 ## Settings
 

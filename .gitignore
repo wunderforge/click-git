@@ -1,6 +1,7 @@
 node_modules/
 out/
 dist/
+demo-workspace/
 .vscode-test/
 .agents/
 .codex/

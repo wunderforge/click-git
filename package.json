@@ -1,0 +1,176 @@
+{
+  "name": "click-git",
+  "displayName": "Click Git",
+  "description": "Explorer context-menu Git commands scoped to the selected folder.",
+  "version": "0.0.1",
+  "publisher": "wunderforge",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wunderforge/click-git.git"
+  },
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "Click Git runs explicit Git commands and requires workspace trust."
+    }
+  },
+  "activationEvents": [
+    "onCommand:clickGit.stageFolder",
+    "onCommand:clickGit.unstageFolder",
+    "onCommand:clickGit.commitFolder",
+    "onCommand:clickGit.restoreFolder",
+    "onCommand:clickGit.statusFolder",
+    "onCommand:clickGit.diffFolder",
+    "onCommand:clickGit.pullRepo",
+    "onCommand:clickGit.pullNestedRepos"
+  ],
+  "main": "./out/src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "clickGit.stageFolder",
+        "title": "Click Git: Stage Folder",
+        "category": "Click Git"
+      },
+      {
+        "command": "clickGit.unstageFolder",
+        "title": "Click Git: Unstage Folder",
+        "category": "Click Git"
+      },
+      {
+        "command": "clickGit.commitFolder",
+        "title": "Click Git: Commit Folder",
+        "category": "Click Git"
+      },
+      {
+        "command": "clickGit.restoreFolder",
+        "title": "Click Git: Restore Folder",
+        "category": "Click Git"
+      },
+      {
+        "command": "clickGit.statusFolder",
+        "title": "Click Git: Status Folder",
+        "category": "Click Git"
+      },
+      {
+        "command": "clickGit.diffFolder",
+        "title": "Click Git: Diff Folder",
+        "category": "Click Git"
+      },
+      {
+        "command": "clickGit.pullRepo",
+        "title": "Click Git: Pull Repo",
+        "category": "Click Git"
+      },
+      {
+        "command": "clickGit.pullNestedRepos",
+        "title": "Click Git: Pull Nested Repos",
+        "category": "Click Git"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "clickGit.stageFolder",
+          "when": "explorerResourceIsFolder && isWorkspaceTrusted",
+          "group": "clickGit@1"
+        },
+        {
+          "command": "clickGit.unstageFolder",
+          "when": "explorerResourceIsFolder && isWorkspaceTrusted",
+          "group": "clickGit@2"
+        },
+        {
+          "command": "clickGit.commitFolder",
+          "when": "explorerResourceIsFolder && isWorkspaceTrusted",
+          "group": "clickGit@3"
+        },
+        {
+          "command": "clickGit.restoreFolder",
+          "when": "explorerResourceIsFolder && isWorkspaceTrusted",
+          "group": "clickGit@4"
+        },
+        {
+          "command": "clickGit.statusFolder",
+          "when": "explorerResourceIsFolder && isWorkspaceTrusted",
+          "group": "clickGit@5"
+        },
+        {
+          "command": "clickGit.diffFolder",
+          "when": "explorerResourceIsFolder && isWorkspaceTrusted",
+          "group": "clickGit@6"
+        },
+        {
+          "command": "clickGit.pullRepo",
+          "when": "explorerResourceIsFolder && isWorkspaceTrusted",
+          "group": "clickGit@7"
+        },
+        {
+          "command": "clickGit.pullNestedRepos",
+          "when": "explorerResourceIsFolder && isWorkspaceTrusted",
+          "group": "clickGit@8"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Click Git",
+      "properties": {
+        "clickGit.pull.ffOnly": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use --ff-only for pull commands."
+        },
+        "clickGit.pullNested.maxDepth": {
+          "type": "number",
+          "default": 4,
+          "minimum": 1,
+          "maximum": 16,
+          "description": "Maximum directory depth for nested repository discovery."
+        },
+        "clickGit.pullNested.includeDirtyRepos": {
+          "type": "boolean",
+          "default": false,
+          "description": "Pull nested repositories with uncommitted changes."
+        },
+        "clickGit.commit.autoStageFolder": {
+          "type": "boolean",
+          "default": true,
+          "description": "Stage the selected folder before committing it."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "typecheck": "tsc -p . --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit tests/git-fixtures",
+    "test:git-fixtures": "vitest run tests/git-fixtures",
+    "test:vscode": "node ./out/tests/runTest.js",
+    "prepackage": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Remove-Item -LiteralPath .\\click-git-0.0.1.vsix -Force -ErrorAction SilentlyContinue\"",
+    "package": "vsce package --no-dependencies",
+    "check": "npm run lint && npm run typecheck && npm run test:unit && npm run test:vscode && npm run package"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/mocha": "^10.0.0",
+    "@types/vscode": "^1.95.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@vscode/test-electron": "^2.5.0",
+    "@vscode/vsce": "^3.2.0",
+    "eslint": "^9.0.0",
+    "glob": "^11.0.0",
+    "mocha": "^10.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  }
+}

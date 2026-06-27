@@ -1,0 +1,14 @@
+.git/**
+.agents/**
+AGENTS.md
+docs/**
+tests/**
+src/**
+node_modules/**
+out/tests/**
+out/vitest.config.*
+scripts/**
+*.vsix
+tsconfig.json
+eslint.config.mjs
+vitest.config.ts

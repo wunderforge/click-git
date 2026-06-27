@@ -168,8 +168,7 @@
     "test:unit": "vitest run tests/unit tests/git-fixtures",
     "test:git-fixtures": "vitest run tests/git-fixtures",
     "test:vscode": "node ./out/tests/runTest.js",
-    "prepackage": "node ./scripts/prepackage.mjs",
-    "package": "vsce package --no-dependencies --out dist/click-git-0.0.1.vsix",
+    "package": "node ./scripts/package-vsix.mjs",
     "vscode:prepublish": "npm run compile",
     "check": "npm run lint && npm run typecheck && npm run test:unit && npm run test:vscode && npm run package"
   },

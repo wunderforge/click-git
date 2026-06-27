@@ -37,6 +37,7 @@ Check `package.json`:
 - `version`: SemVer, unique for every publish
 - `license`: `MIT`
 - `repository`, `bugs`, and `homepage`: GitHub URLs
+- `icon`: `media/icon.png`
 
 Check public docs:
 
@@ -45,6 +46,7 @@ Check public docs:
 - `LICENSE`
 - `SECURITY.md`
 - `CONTRIBUTING.md`
+- `media/demo.gif`
 
 ## 3. Package A VSIX
 
@@ -55,13 +57,15 @@ npm run package
 This creates:
 
 ```text
-click-git-0.0.1.vsix
+dist/click-git-<version>-<timestamp>.vsix
+dist/latest-vsix.txt
 ```
 
 Install locally for a final smoke test:
 
 ```powershell
-code --install-extension .\click-git-0.0.1.vsix
+$vsix = Get-Content .\dist\latest-vsix.txt
+code --install-extension $vsix
 ```
 
 Uninstall locally if needed:
@@ -102,7 +106,7 @@ Or publish an already packaged VSIX from the Marketplace management UI:
 
 1. Open the publisher management page.
 2. Select publisher `wunderforge`.
-3. Upload `click-git-0.0.1.vsix`.
+3. Upload the VSIX path listed in `dist/latest-vsix.txt`.
 
 ## 7. Version Updates
 
@@ -128,7 +132,7 @@ Recommended:
 
 1. Tag the release, for example `v0.0.1`.
 2. Create a GitHub release.
-3. Attach `click-git-0.0.1.vsix`.
+3. Attach the VSIX path listed in `dist/latest-vsix.txt`.
 4. Copy release notes from `CHANGELOG.md`.
 
 ## 9. Troubleshooting

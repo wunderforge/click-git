@@ -2,6 +2,10 @@
 
 Click Git is a VS Code extension for Explorer context-menu Git commands scoped to the folder you select.
 
+[Marketplace](https://marketplace.visualstudio.com/items?itemName=WunderForge.click-git) | [GitHub](https://github.com/wunderforge/click-git)
+
+![Click Git demo](media/demo.gif)
+
 ## Features
 
 - `Click Git: Stage Folder`

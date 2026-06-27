@@ -4,7 +4,7 @@ Turn VS Code Explorer into a folder-aware Git control surface.
 
 Click Git is built for workspaces that look like small cities: repos, notes, prototypes, client work, side projects, and half-finished ideas living under one parent folder.
 
-When your attention is already on a folder, Git should be there too. No terminal detour. No `cd` archaeology. No checking the same path twice just to stage, restore, diff, commit, or pull the thing in front of you.
+When your attention is already on a folder, Git should be there too. No terminal detour. No `cd` archaeology. No checking the same path twice just to stage, restore, diff, commit, pull, or push the thing in front of you.
 
 Right-click a folder. Run the Git command you meant.
 
@@ -32,6 +32,7 @@ Click Git removes that little tax. Pick the folder in Explorer and act on it.
 - Restore tracked changes in the selected folder while keeping untracked files.
 - Show folder-scoped status and diff in a dedicated `Click Git` output channel.
 - Pull the owning repository from any folder inside it.
+- Push the owning repository from any folder inside it, using the current branch upstream.
 - Pull many nested repositories under a parent folder, with dirty repos skipped by default.
 
 ## Built For
@@ -49,22 +50,18 @@ Click Git removes that little tax. Pick the folder in Explorer and act on it.
 3. Click Git resolves the owning Git repository and runs the operation with an explicit pathspec.
 4. Results and longer output go to the `Click Git` output channel.
 
-Git pull is repository-scoped. If you run Pull Repo from a subfolder, Click Git resolves the owning repository and pulls at the repo root. It does not claim to protect against Git commands run from terminals, VS Code SCM, other extensions, or external Git clients.
+Git pull and push are repository-scoped. If you run Pull Repo or Push Repo from a subfolder, Click Git resolves the owning repository and runs the command at the repo root. It does not claim to protect against Git commands run from terminals, VS Code SCM, other extensions, or external Git clients.
+
+Push uses the current branch's configured upstream. Click Git does not guess `origin`, choose among multiple remotes, set upstream automatically, force push, push tags, or bulk-push nested repositories. If no upstream is configured, Push Repo fails closed and asks you to set upstream with Git CLI or VS Code Source Control first.
 
 ## Safety Model
 
 - Folder-scoped commands use explicit Git pathspecs.
 - Pull commands are repository-scoped and default to `--ff-only`.
+- Push commands are repository-scoped and use plain `git push` against the current branch upstream.
 - Restore keeps untracked files by default.
 - The extension requires a trusted workspace before it runs Git commands.
 - The MVP does not install Git hooks, mutate `skip-worktree`, rewrite commits, or change repository configuration.
-- Push is not implemented in the current release.
-
-## Roadmap: Safe Push
-
-`Click Git: Push Repo` is planned as a conservative follow-up. The current design is to resolve the clicked folder to its owning repository, then run plain `git push` from the repository root using the current branch's configured upstream.
-
-Click Git should not guess `origin`, choose among multiple remotes, set upstream automatically, force push, push tags, or bulk-push nested repositories in the first push release. If no upstream is configured, the command should fail closed and ask the user to set upstream with Git CLI or VS Code Source Control first.
 
 ## Settings
 
@@ -72,6 +69,7 @@ Click Git should not guess `origin`, choose among multiple remotes, set upstream
 - `clickGit.pullNested.maxDepth`: maximum directory depth for nested repository discovery. Default: `4`.
 - `clickGit.pullNested.includeDirtyRepos`: pull nested repositories with uncommitted changes. Default: `false`.
 - `clickGit.commit.autoStageFolder`: stage the selected folder before committing it. Default: `true`.
+- `clickGit.push.confirmBeforePush`: confirm repository path, current branch, and upstream before pushing. Default: `true`.
 
 ## Development
 
@@ -88,7 +86,7 @@ npm test
 2. Press `F5` and choose `Run Click Git Extension`.
 3. In the Extension Development Host, open any folder that contains a Git repository.
 4. Right-click a folder in Explorer and run one of the `Click Git:*` commands.
-5. For status, diff, pull, and nested pull, inspect the `Click Git` output channel.
+5. For status, diff, pull, push, and nested pull, inspect the `Click Git` output channel.
 
 Fast disposable repo setup:
 

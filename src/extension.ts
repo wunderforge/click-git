@@ -3,8 +3,10 @@ import * as path from "node:path";
 import {
   commitFolder,
   diffFolder,
+  getPushTarget,
   pullNestedRepos,
   pullRepo,
+  pushRepo,
   restoreFolder,
   stageFolder,
   statusFolder,
@@ -121,6 +123,31 @@ export function activate(context: vscode.ExtensionContext): void {
     }
     output.appendLine(result.output || "(up to date)");
     output.show(true);
+    return result;
+  });
+
+  register("clickGit.pushRepo", async (uri) => {
+    const target = getTargetPath(uri);
+    const pushTarget = await getPushTarget(target);
+    const confirmBeforePush = vscode.workspace.getConfiguration("clickGit").get<boolean>("push.confirmBeforePush", true);
+
+    if (confirmBeforePush) {
+      const choice = await vscode.window.showWarningMessage(
+        `Push ${pushTarget.branch} to ${pushTarget.upstream} from ${pushTarget.resolved.repoRoot}?`,
+        { modal: true },
+        "Push"
+      );
+      if (choice !== "Push") {
+        output.appendLine("Push canceled.");
+        return undefined;
+      }
+    }
+
+    const result = await withProgress("Click Git: pushing repository", () => pushRepo(pushTarget));
+    output.appendLine(`Pushed ${result.target.branch} to ${result.target.upstream} from ${result.target.resolved.repoRoot}`);
+    output.appendLine(result.output || "(push completed)");
+    output.show(true);
+    void vscode.window.showInformationMessage(`Pushed ${result.target.branch} to ${result.target.upstream}`);
     return result;
   });
 

@@ -1,8 +1,8 @@
 {
   "name": "click-git",
   "displayName": "Click Git",
-  "description": "Right-click any folder in VS Code to stage, commit, restore, diff, or pull the right Git repo.",
-  "version": "0.0.5",
+  "description": "Right-click any folder in VS Code to stage, commit, restore, diff, pull, or push the right Git repo.",
+  "version": "0.0.6",
   "publisher": "wunderforge",
   "license": "MIT",
   "icon": "media/icon.png",
@@ -15,7 +15,8 @@
     "monorepo",
     "knowledge base",
     "workspace",
-    "source control"
+    "source control",
+    "push"
   ],
   "homepage": "https://github.com/wunderforge/click-git#readme",
   "bugs": {
@@ -45,6 +46,7 @@
     "onCommand:clickGit.statusFolder",
     "onCommand:clickGit.diffFolder",
     "onCommand:clickGit.pullRepo",
+    "onCommand:clickGit.pushRepo",
     "onCommand:clickGit.pullNestedRepos"
   ],
   "main": "./out/src/extension.js",
@@ -83,6 +85,11 @@
       {
         "command": "clickGit.pullRepo",
         "title": "Click Git: Pull Repo",
+        "category": "Click Git"
+      },
+      {
+        "command": "clickGit.pushRepo",
+        "title": "Click Git: Push Repo",
         "category": "Click Git"
       },
       {
@@ -129,9 +136,14 @@
           "group": "clickGit@7"
         },
         {
-          "command": "clickGit.pullNestedRepos",
+          "command": "clickGit.pushRepo",
           "when": "explorerResourceIsFolder && isWorkspaceTrusted",
           "group": "clickGit@8"
+        },
+        {
+          "command": "clickGit.pullNestedRepos",
+          "when": "explorerResourceIsFolder && isWorkspaceTrusted",
+          "group": "clickGit@9"
         }
       ]
     },
@@ -159,6 +171,11 @@
           "type": "boolean",
           "default": true,
           "description": "Stage the selected folder before committing it."
+        },
+        "clickGit.push.confirmBeforePush": {
+          "type": "boolean",
+          "default": true,
+          "description": "Confirm repository path, current branch, and upstream before running git push."
         }
       }
     }

@@ -2,6 +2,12 @@
 
 All notable changes to Click Git will be documented in this file.
 
+## 0.0.6
+
+- Added `Click Git: Push Repo` as an upstream-based repository-scoped command.
+- Added push confirmation with repository path, current branch, and upstream.
+- Documented push limitations: no remote guessing, no automatic upstream setup, no force push, no tags, and no nested bulk push.
+
 ## 0.0.5
 
 - Polished the Marketplace and README opening copy around the multi-repo workspace pain point.

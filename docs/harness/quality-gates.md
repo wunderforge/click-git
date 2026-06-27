@@ -13,6 +13,7 @@ This project's core risk is false confidence: a command can look right in VS Cod
 | Restore folder | Failing destructive-flow test | Real repo proves tracked changes under path restore and untracked files remain unless explicitly requested | Full `.\scripts\check.ps1` |
 | Status/diff | Snapshot or structured output test | Real repo proves scoped output excludes outside paths | Full `.\scripts\check.ps1` |
 | Pull repo | Failing fixture with local bare remote | Real `git pull --ff-only` succeeds and reports upstream errors clearly | Full `.\scripts\check.ps1` |
+| Push repo | Failing fixture with local bare remote and configured upstream | Real `git push` updates upstream; no-upstream repo fails closed without guessing `origin` | Full `.\scripts\check.ps1` |
 | Pull nested repos | Failing fixture with multiple nested remotes | Summary proves succeeded, skipped dirty, and failed repos are separated | Full `.\scripts\check.ps1` |
 | VS Code menu/command wiring | Extension integration test | Command invocation through VS Code test host | Full `.\scripts\check.ps1` |
 | User-facing UI flow | Spec first | Automated command test plus VS Code test host; use computer-use sandbox for final smoke when UI matters | Full `.\scripts\check.ps1` |

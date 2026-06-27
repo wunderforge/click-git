@@ -22,6 +22,7 @@ suite("Click Git extension", () => {
       "clickGit.statusFolder",
       "clickGit.diffFolder",
       "clickGit.pullRepo",
+      "clickGit.pushRepo",
       "clickGit.pullNestedRepos"
     ]) {
       assert.ok(commands.includes(command), `${command} should be registered`);
@@ -44,6 +45,30 @@ suite("Click Git extension", () => {
       await fs.promises.rm(repo, { recursive: true, force: true });
     }
   });
+
+  test("invokes push with a configured upstream", async () => {
+    const root = await fs.promises.mkdtemp(path.join(os.tmpdir(), "click-git-vscode-push-"));
+    try {
+      const { bare, local } = await createRemoteBackedRepo(root);
+      await vscode.workspace.getConfiguration("clickGit").update("push.confirmBeforePush", false, vscode.ConfigurationTarget.Global);
+      await writeFile(path.join(local, "selected", "pushed.txt"), "pushed\n");
+      await git(local, ["add", "--", "."]);
+      await git(local, ["commit", "-m", "push from command"]);
+      const localHead = (await git(local, ["rev-parse", "HEAD"])).trim();
+
+      const result = await vscode.commands.executeCommand<{ target: { branch: string; upstream: string } }>(
+        "clickGit.pushRepo",
+        vscode.Uri.file(path.join(local, "selected"))
+      );
+
+      assert.equal(result.target.branch, "main");
+      assert.equal(result.target.upstream, "origin/main");
+      assert.equal((await git(bare, ["rev-parse", "main"])).trim(), localHead);
+    } finally {
+      await vscode.workspace.getConfiguration("clickGit").update("push.confirmBeforePush", undefined, vscode.ConfigurationTarget.Global);
+      await fs.promises.rm(root, { recursive: true, force: true });
+    }
+  });
 });
 
 async function createRepo(): Promise<string> {
@@ -55,6 +80,25 @@ async function createRepo(): Promise<string> {
   await git(repo, ["add", "--", "."]);
   await git(repo, ["commit", "-m", "initial"]);
   return repo;
+}
+
+async function createRemoteBackedRepo(parent: string): Promise<{ bare: string; seed: string; local: string }> {
+  const bare = path.join(parent, "remote.git");
+  const seed = path.join(parent, "seed");
+  const local = path.join(parent, "local");
+  await fs.promises.mkdir(bare, { recursive: true });
+  await git(bare, ["init", "--bare", "-b", "main"]);
+  await git(parent, ["clone", bare, seed]);
+  await git(seed, ["config", "user.name", "Click Git Tests"]);
+  await git(seed, ["config", "user.email", "click-git@example.test"]);
+  await writeFile(path.join(seed, "selected", "file.txt"), "base\n");
+  await git(seed, ["add", "--", "."]);
+  await git(seed, ["commit", "-m", "initial"]);
+  await git(seed, ["push", "-u", "origin", "main"]);
+  await git(parent, ["clone", bare, local]);
+  await git(local, ["config", "user.name", "Click Git Tests"]);
+  await git(local, ["config", "user.email", "click-git@example.test"]);
+  return { bare, seed, local };
 }
 
 async function writeFile(filePath: string, content: string): Promise<void> {

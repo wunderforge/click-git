@@ -11,8 +11,9 @@ The MVP focuses on path-specific local Git workflows:
 - Restore changes under the selected folder.
 - View status or diff scoped to the selected folder.
 - Pull one or many repositories when the selected folder is itself a repo root or contains multiple nested repos.
+- Push the owning repository when the current branch has a configured upstream.
 
-The MVP deliberately does not promise true "pull/push a subfolder" semantics inside a single Git repository. Git push and pull operate on commits and refs, not directories. The product should make path-scoped local operations easy first, then add guardrails and advanced repository-management flows in later releases.
+The MVP deliberately does not promise true "pull/push a subfolder" semantics inside a single Git repository. Git push and pull operate on commits and refs, not directories. The product should make path-scoped local operations easy while keeping repository-scoped operations explicit.
 
 ## 2. Problem
 
@@ -35,6 +36,7 @@ The MVP should:
 - Resolve the selected folder to the correct Git repository.
 - Use safe Git commands with explicit pathspecs.
 - Support multi-repo pull for a folder containing many nested Git repositories.
+- Support safe repository push only when the current branch has a configured upstream.
 - Show clear progress, success, and failure messages in VS Code.
 - Avoid modifying Git hooks, skip-worktree flags, or repository configuration in the first release.
 
@@ -43,8 +45,9 @@ The MVP should:
 The MVP will not:
 
 - Implement true subfolder-only `git pull` or `git push` inside a single repository.
-- Push commits to a remote in the first release.
 - Guess a default push remote or branch when a branch has no upstream.
+- Automatically set upstream during push.
+- Force push, push tags, push all branches, or bulk-push nested repositories.
 - Inject `pre-commit`, `pre-push`, or other Git hooks.
 - Apply recursive `skip-worktree` or `assume-unchanged` flags.
 - Rewrite commits to remove disallowed folder changes.
@@ -150,6 +153,20 @@ Acceptance criteria:
 - Shows a summary with succeeded, skipped, and failed repositories.
 - Lets users configure max depth in settings.
 
+### 6.9 Push Owning Repository
+
+As a developer, I can right-click a folder and choose "Click Git: Push Repo" so I can push the owning repository without opening a terminal in the repo root.
+
+Acceptance criteria:
+
+- Detects whether the selected folder is a repository root or inside a repository.
+- If the selected folder is inside a repository, runs push at the repository root and explains that push is repository-scoped.
+- Detects the current branch and configured upstream.
+- Shows a confirmation prompt with repository path, current branch, and upstream before pushing by default.
+- Runs plain `git push` from the repository root.
+- Fails closed when no upstream is configured.
+- Does not guess `origin`, choose among multiple remotes, run `--set-upstream`, force push, push tags, push all branches, or push nested repositories in bulk.
+
 ## 7. UX Surface
 
 Explorer context menu commands for folders:
@@ -161,6 +178,7 @@ Explorer context menu commands for folders:
 - `Click Git: Status Folder`
 - `Click Git: Diff Folder`
 - `Click Git: Pull Repo`
+- `Click Git: Push Repo`
 - `Click Git: Pull Nested Repos`
 
 Command palette should expose the same commands when a file or folder is selected in Explorer.
@@ -177,9 +195,6 @@ Settings:
 - `clickGit.pullNested.maxDepth`: default `4`.
 - `clickGit.pullNested.includeDirtyRepos`: default `false`.
 - `clickGit.commit.autoStageFolder`: default `true`.
-
-Future push setting candidate:
-
 - `clickGit.push.confirmBeforePush`: default `true`.
 
 ## 8. Technical Approach
@@ -216,6 +231,7 @@ Example command shapes:
 - Status: `git status --short -- <path>`
 - Diff: `git diff -- <path>`
 - Pull: `git pull --ff-only`
+- Push: `git push`
 
 ### 8.3 Commit Safety
 
@@ -244,16 +260,16 @@ Pull behavior:
 - Run `git pull --ff-only` for clean repos.
 - Continue after failures and summarize at the end.
 
-### 8.5 Future Safe Push Repo
+### 8.5 Safe Push Repo
 
-`Click Git: Push Repo` is a recommended post-MVP candidate, but it should be repository-scoped and conservative.
+`Click Git: Push Repo` is repository-scoped and conservative.
 
 Proposed behavior:
 
 1. Resolve the clicked folder to its owning repository root.
 2. Detect the current branch and its configured upstream.
 3. If no upstream is configured, fail closed and tell the user to set upstream with Git CLI or VS Code Source Control.
-4. If an upstream exists, show a confirmation prompt with repository path, current branch, and upstream.
+4. If an upstream exists and `clickGit.push.confirmBeforePush` is enabled, show a confirmation prompt with repository path, current branch, and upstream.
 5. Run plain `git push` from the repository root.
 
 Decision:
@@ -278,7 +294,8 @@ Required error states:
 - Pull fails due to non-fast-forward updates.
 - Commit message is empty.
 - Restore was canceled by the user.
-- Future push command: repository has no upstream branch.
+- Push repo: repository has no upstream branch.
+- Push repo: current checkout is detached HEAD.
 
 Errors should be actionable and include the repository path.
 
@@ -295,28 +312,20 @@ The extension should:
 
 ## 11. Future Roadmap
 
-### Phase 2: Safe Repository Push
-
-- Add `Click Git: Push Repo` as an upstream-based repository-scoped command.
-- Confirm the repository path, current branch, and upstream before pushing.
-- Fail closed when no upstream is configured.
-- Keep push out of nested bulk operations until real users validate the need.
-- Document clearly that push is repository-scoped and uses the current branch upstream.
-
-### Phase 3: Stronger Path Guardrails
+### Phase 2: Stronger Path Guardrails
 
 - Optional pre-commit hook installer to prevent commits touching protected folders.
 - Optional pre-push scanner that blocks outgoing commits touching protected folders.
 - Local `.git/click-git/locked-folders.json` state.
 - Clear uninstall path for injected hooks.
 
-### Phase 4: Pull Conflict Assistance
+### Phase 3: Pull Conflict Assistance
 
 - Safer pull workflow for protected folders.
 - Temporary unskip/reskip flow only when a user explicitly enables folder lock mode.
 - Merge conflict UI integration.
 
-### Phase 5: Advanced Repository Models
+### Phase 4: Advanced Repository Models
 
 - Git subtree helper for true folder-to-remote workflows.
 - Git worktree helper for branch isolation.

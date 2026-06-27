@@ -14,6 +14,18 @@ Quality gate: temp-repo test where selected folder is below repo root proves pul
 
 Evidence: command invocation record or integration output showing `cwd=<repo-root>` and no pathspec passed to `git pull`.
 
+## Gotcha: Git Push Must Not Guess A Remote
+
+When working on: push features.
+
+Agents often get wrong: defaulting to `origin`, adding `--set-upstream`, pushing tags, force-pushing, or describing push as folder-scoped.
+
+Do this instead: resolve the clicked folder to the owning repo root, detect the current branch upstream, confirm the repo path/branch/upstream, then run plain `git push`. If no upstream exists, fail closed.
+
+Quality gate: temp-repo test with a local bare remote proves upstream-based push succeeds; temp-repo test with an `origin` remote but no upstream proves Click Git refuses to guess.
+
+Evidence: fixture output showing the bare remote updated only when upstream exists, plus no-upstream failure before push.
+
 ## Gotcha: Shell String Git Commands Can Corrupt Path Safety
 
 When working on: command execution.

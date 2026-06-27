@@ -1,8 +1,8 @@
 # Click Git TODO
 
-## Next Candidate: Safe Push Repo
+## Completed: Safe Push Repo
 
-Add `Click Git: Push Repo` as a repository-scoped command after the current Marketplace media release.
+`Click Git: Push Repo` is implemented as a repository-scoped command.
 
 Decision:
 
@@ -28,3 +28,10 @@ Quality gates:
 - Git fixture tests for successful upstream push to a local bare remote.
 - Git fixture tests proving no remote is guessed when upstream is absent.
 - README and PRD copy must keep push described as repository-scoped, not folder-scoped.
+
+## Future Push Candidates
+
+- Add an explicit "Set upstream..." helper only if users ask for it.
+- Consider push tags only as a separate explicit command.
+- Consider nested bulk push only after real users validate the workflow and risk tolerance.
+- Keep force push out of the Explorer context menu unless there is a dedicated, heavily guarded design.

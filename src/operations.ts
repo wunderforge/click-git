@@ -16,6 +16,12 @@ export interface PullNestedSummary {
   failed: Array<{ repoRoot: string; reason: string }>;
 }
 
+export interface PushTarget {
+  resolved: ResolvedRepository;
+  branch: string;
+  upstream: string;
+}
+
 export async function stageFolder(selectedPath: string): Promise<ResolvedRepository> {
   const resolved = await resolveRepository(selectedPath);
   await runGit(resolved.repoRoot, ["add", "--", resolved.pathspec]);
@@ -75,6 +81,34 @@ export async function pullRepo(selectedPath: string, options: PullOptions): Prom
 
   const result = await runGit(resolved.repoRoot, args);
   return { resolved, output: `${result.stdout}${result.stderr}`.trimEnd() };
+}
+
+export async function getPushTarget(selectedPath: string): Promise<PushTarget> {
+  const resolved = await resolveRepository(selectedPath);
+  const branchResult = await runGit(resolved.repoRoot, ["rev-parse", "--abbrev-ref", "HEAD"]);
+  const branch = branchResult.stdout.trim();
+  if (branch === "" || branch === "HEAD") {
+    throw new Error("Push requires a named current branch with a configured upstream.");
+  }
+
+  let upstream: string;
+  try {
+    const upstreamResult = await runGit(resolved.repoRoot, ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"]);
+    upstream = upstreamResult.stdout.trim();
+  } catch {
+    throw new Error(`No upstream configured for branch '${branch}'. Set an upstream with Git CLI or VS Code Source Control before using Click Git: Push Repo.`);
+  }
+
+  if (upstream === "") {
+    throw new Error(`No upstream configured for branch '${branch}'. Set an upstream with Git CLI or VS Code Source Control before using Click Git: Push Repo.`);
+  }
+
+  return { resolved, branch, upstream };
+}
+
+export async function pushRepo(target: PushTarget): Promise<{ target: PushTarget; output: string }> {
+  const result = await runGit(target.resolved.repoRoot, ["push"]);
+  return { target, output: `${result.stdout}${result.stderr}`.trimEnd() };
 }
 
 export async function pullNestedRepos(selectedPath: string, options: PullNestedOptions): Promise<PullNestedSummary> {

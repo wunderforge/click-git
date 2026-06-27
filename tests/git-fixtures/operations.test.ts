@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { commitFolder, diffFolder, pullNestedRepos, pullRepo, restoreFolder, stageFolder, statusFolder, unstageFolder } from "../../src/operations";
+import { commitFolder, diffFolder, getPushTarget, pullNestedRepos, pullRepo, pushRepo, restoreFolder, stageFolder, statusFolder, unstageFolder } from "../../src/operations";
 import { commitAll, createTempDir, git, initRepo, status, writeFile, type TempDir } from "../helpers/gitFixture";
 
 const temps: TempDir[] = [];
@@ -144,6 +144,61 @@ describe("nested repository pull", () => {
     expect(summary.skipped).toEqual([{ repoRoot: dirty, reason: "dirty" }]);
     expect(summary.failed.map((failure) => failure.repoRoot)).toEqual([noRemote]);
     expect(await fs.promises.readFile(path.join(clean, "remote.txt"), "utf8")).toContain("remote");
+  });
+});
+
+describe("safe repository push", () => {
+  it("pushes the owning repository to the current branch upstream", async () => {
+    const root = await temp();
+    const { bare, local } = await createRemoteBackedRepo(root.path, "pushable");
+    await writeFile(path.join(local, "selected", "local.txt"), "local\n");
+    await git(local, ["add", "--", "."]);
+    await git(local, ["commit", "-m", "local update"]);
+    const localHead = (await git(local, ["rev-parse", "HEAD"])).trim();
+
+    const target = await getPushTarget(path.join(local, "selected"));
+    const result = await pushRepo(target);
+
+    expect(target.resolved.repoRoot).toBe(local);
+    expect(target.resolved.pathspec).toBe("selected");
+    expect(target.branch).toBe("main");
+    expect(target.upstream).toBe("origin/main");
+    expect(result.target).toBe(target);
+    expect((await git(bare, ["rev-parse", "main"])).trim()).toBe(localHead);
+  });
+
+  it("fails closed when the current branch has no upstream", async () => {
+    const root = await temp();
+    const repo = path.join(root.path, "no-upstream");
+    await initRepo(repo);
+    await writeFile(path.join(repo, "selected", "file.txt"), "base\n");
+    await commitAll(repo, "initial");
+
+    await expect(getPushTarget(path.join(repo, "selected"))).rejects.toThrow(/No upstream configured/);
+  });
+
+  it("fails closed from detached HEAD", async () => {
+    const root = await temp();
+    const { local } = await createRemoteBackedRepo(root.path, "detached");
+    const head = (await git(local, ["rev-parse", "HEAD"])).trim();
+    await git(local, ["checkout", "--detach", head]);
+
+    await expect(getPushTarget(path.join(local, "selected"))).rejects.toThrow(/named current branch/);
+  });
+
+  it("does not guess origin or set upstream automatically", async () => {
+    const root = await temp();
+    const bare = path.join(root.path, "origin.git");
+    const repo = path.join(root.path, "local");
+    await fs.promises.mkdir(bare, { recursive: true });
+    await git(bare, ["init", "--bare", "-b", "main"]);
+    await initRepo(repo);
+    await git(repo, ["remote", "add", "origin", bare]);
+    await writeFile(path.join(repo, "selected", "file.txt"), "base\n");
+    await commitAll(repo, "initial");
+
+    await expect(getPushTarget(path.join(repo, "selected"))).rejects.toThrow(/No upstream configured/);
+    await expect(git(repo, ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"])).rejects.toThrow();
   });
 });
 

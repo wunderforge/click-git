@@ -2,6 +2,11 @@
 
 All notable changes to Click Git will be documented in this file.
 
+## 0.0.3
+
+- Added a Marketplace hero image that explains the multi-repo Explorer workflow at a glance.
+- Updated the extension icon to match the new Click Git visual identity.
+
 ## 0.0.2
 
 - Added real demo media for the Marketplace and README.

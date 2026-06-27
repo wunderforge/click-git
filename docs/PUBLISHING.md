@@ -46,6 +46,7 @@ Check public docs:
 - `LICENSE`
 - `SECURITY.md`
 - `CONTRIBUTING.md`
+- `media/hero.png`
 - `media/demo.gif`
 - `media/screenshot-context-menu.png`
 - `media/screenshot-stage-progress.png`

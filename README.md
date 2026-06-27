@@ -6,6 +6,10 @@ Click Git is a small VS Code extension for people who live inside big workspaces
 
 [Marketplace](https://marketplace.visualstudio.com/items?itemName=WunderForge.click-git) | [GitHub](https://github.com/wunderforge/click-git)
 
+![Click Git turns VS Code Explorer folders into precise Git actions](media/hero.png)
+
+## Watch The Flow
+
 ![Click Git demo](media/demo.gif)
 
 ## See It In Action

@@ -1,7 +1,7 @@
 {
   "name": "click-git",
   "displayName": "Click Git",
-  "description": "Explorer context-menu Git commands scoped to the selected folder.",
+  "description": "Right-click any folder in VS Code to stage, commit, restore, diff, or pull the right Git repo.",
   "version": "0.0.1",
   "publisher": "wunderforge",
   "license": "MIT",
@@ -12,6 +12,9 @@
     "explorer",
     "context menu",
     "multi repo",
+    "monorepo",
+    "knowledge base",
+    "workspace",
     "source control"
   ],
   "homepage": "https://github.com/wunderforge/click-git#readme",

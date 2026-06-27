@@ -1,21 +1,45 @@
 # Click Git
 
-Click Git is a VS Code extension for Explorer context-menu Git commands scoped to the folder you select.
+Right-click a folder. Run the Git command you meant.
+
+Click Git is a small VS Code extension for people who live inside big workspaces: knowledge bases, project archives, experiments, client work, side projects, and many small repos sitting under one parent folder. Instead of opening a terminal, finding the right repo, and typing the right path, you can run common Git actions directly from the Explorer folder you are already looking at.
 
 [Marketplace](https://marketplace.visualstudio.com/items?itemName=WunderForge.click-git) | [GitHub](https://github.com/wunderforge/click-git)
 
 ![Click Git demo](media/demo.gif)
 
+## Why It Exists
+
+VS Code is great when you are focused on one repository. Real work is often messier.
+
+You may have a large folder for your knowledge base, notes, prototypes, and active projects. Some folders are just documents. Some are standalone Git repos. Some are nested experiments. When you want to stage or inspect one project, the friction is tiny but constant: open terminal, `cd` into the right directory, run Git, jump back.
+
+Click Git removes that little tax. Pick the folder in Explorer and act on it.
+
 ## Features
 
-- `Click Git: Stage Folder`
-- `Click Git: Unstage Folder`
-- `Click Git: Commit Folder`
-- `Click Git: Restore Folder`
-- `Click Git: Status Folder`
-- `Click Git: Diff Folder`
-- `Click Git: Pull Repo`
-- `Click Git: Pull Nested Repos`
+- Stage only the selected folder.
+- Unstage only the selected folder.
+- Commit the selected folder without accidentally including unrelated staged files.
+- Restore tracked changes in the selected folder while keeping untracked files.
+- Show folder-scoped status and diff in a dedicated `Click Git` output channel.
+- Pull the owning repository from any folder inside it.
+- Pull many nested repositories under a parent folder, with dirty repos skipped by default.
+
+## Built For
+
+- Personal knowledge bases that also contain project repos.
+- Workspace folders that collect many independent repos.
+- Developers who review generated or AI-assisted changes one folder at a time.
+- People who prefer the Explorer tree for navigation but still want precise Git actions.
+- Anyone tired of `cd ../../that-one-repo` for small Git chores.
+
+## How It Works
+
+1. Right-click a folder in VS Code Explorer.
+2. Choose a `Click Git:*` command.
+3. Click Git resolves the owning Git repository and runs the operation with an explicit pathspec.
+4. Results and longer output go to the `Click Git` output channel.
 
 Git pull is repository-scoped. If you run Pull Repo from a subfolder, Click Git resolves the owning repository and pulls at the repo root. It does not claim to protect against Git commands run from terminals, VS Code SCM, other extensions, or external Git clients.
 

@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { commitFolder, diffFolder, pullNestedRepos, restoreFolder, stageFolder, statusFolder, unstageFolder } from "../../src/operations";
+import { commitFolder, diffFolder, pullNestedRepos, pullRepo, restoreFolder, stageFolder, statusFolder, unstageFolder } from "../../src/operations";
 import { commitAll, createTempDir, git, initRepo, status, writeFile, type TempDir } from "../helpers/gitFixture";
 
 const temps: TempDir[] = [];
@@ -103,25 +103,67 @@ describe("folder-scoped Git operations", () => {
 });
 
 describe("nested repository pull", () => {
-  it("skips dirty repos by default and continues after failures", async () => {
+  it("pulls a selected subfolder at the owning repo root", async () => {
     const root = await temp();
-    const clean = path.join(root.path, "clean");
-    const dirty = path.join(root.path, "dirty");
-    const noRemote = path.join(root.path, "no-remote");
-    await initRepo(clean);
+    const { local, seed } = await createRemoteBackedRepo(root.path, "single");
+    await writeFile(path.join(seed, "selected", "remote.txt"), "remote\n");
+    await git(seed, ["add", "--", "."]);
+    await git(seed, ["commit", "-m", "remote update"]);
+    await git(seed, ["push"]);
+
+    const result = await pullRepo(path.join(local, "selected"), { ffOnly: true });
+
+    expect(result.resolved.repoRoot).toBe(local);
+    expect(result.resolved.pathspec).toBe("selected");
+    expect(await fs.promises.readFile(path.join(local, "selected", "remote.txt"), "utf8")).toContain("remote");
+  });
+
+  it("summarizes succeeded, skipped, and failed nested repos", async () => {
+    const root = await temp();
+    const workspace = path.join(root.path, "workspace");
+    const remotes = path.join(root.path, "remotes");
+    await fs.promises.mkdir(workspace, { recursive: true });
+    const { local: clean, seed } = await createRemoteBackedRepo(workspace, "clean", remotes);
+    const dirty = path.join(workspace, "dirty");
+    const noRemote = path.join(workspace, "no-remote");
     await initRepo(dirty);
     await initRepo(noRemote);
-    await writeFile(path.join(clean, "file.txt"), "base\n");
     await writeFile(path.join(dirty, "file.txt"), "base\n");
     await writeFile(path.join(noRemote, "file.txt"), "base\n");
-    await commitAll(clean, "initial");
     await commitAll(dirty, "initial");
     await commitAll(noRemote, "initial");
+    await writeFile(path.join(seed, "remote.txt"), "remote\n");
+    await git(seed, ["add", "--", "."]);
+    await git(seed, ["commit", "-m", "remote update"]);
+    await git(seed, ["push"]);
     await writeFile(path.join(dirty, "file.txt"), "dirty\n");
 
-    const summary = await pullNestedRepos(root.path, { ffOnly: true, maxDepth: 2, includeDirtyRepos: false });
+    const summary = await pullNestedRepos(workspace, { ffOnly: true, maxDepth: 2, includeDirtyRepos: false });
 
+    expect(summary.succeeded).toEqual([clean]);
     expect(summary.skipped).toEqual([{ repoRoot: dirty, reason: "dirty" }]);
-    expect(summary.failed.map((failure) => failure.repoRoot).sort()).toEqual([clean, noRemote].sort());
+    expect(summary.failed.map((failure) => failure.repoRoot)).toEqual([noRemote]);
+    expect(await fs.promises.readFile(path.join(clean, "remote.txt"), "utf8")).toContain("remote");
   });
 });
+
+async function createRemoteBackedRepo(parent: string, name: string, remoteParent = parent): Promise<{ bare: string; seed: string; local: string }> {
+  const bare = path.join(remoteParent, `${name}.git`);
+  const seed = path.join(remoteParent, `${name}-seed`);
+  const local = path.join(parent, name);
+
+  await fs.promises.mkdir(bare, { recursive: true });
+  await git(bare, ["init", "--bare", "-b", "main"]);
+  await git(parent, ["clone", bare, seed]);
+  await git(seed, ["config", "user.name", "Click Git Tests"]);
+  await git(seed, ["config", "user.email", "click-git@example.test"]);
+  await writeFile(path.join(seed, "selected", "file.txt"), "base\n");
+  await git(seed, ["add", "--", "."]);
+  await git(seed, ["commit", "-m", "initial"]);
+  await git(seed, ["push", "-u", "origin", "main"]);
+
+  await git(parent, ["clone", bare, local]);
+  await git(local, ["config", "user.name", "Click Git Tests"]);
+  await git(local, ["config", "user.email", "click-git@example.test"]);
+  return { bare, seed, local };
+}

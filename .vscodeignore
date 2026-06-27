@@ -14,6 +14,8 @@ out/tests/**
 out/vitest.config.*
 scripts/**
 media/icon.svg
+media/preview*/**
+media/final-preview*/**
 *.vsix
 tsconfig.json
 eslint.config.mjs

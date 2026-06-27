@@ -2,7 +2,7 @@
   "name": "click-git",
   "displayName": "Click Git",
   "description": "Right-click any folder in VS Code to stage, commit, restore, diff, or pull the right Git repo.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "wunderforge",
   "license": "MIT",
   "icon": "media/icon.png",

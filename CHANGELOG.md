@@ -2,6 +2,12 @@
 
 All notable changes to Click Git will be documented in this file.
 
+## 0.0.4
+
+- Replaced Marketplace media with final branded command-flow artwork.
+- Added a command gallery covering every Explorer context-menu action.
+- Redrew the extension icon from a clean vector-style source instead of a screenshot crop.
+
 ## 0.0.3
 
 - Added a Marketplace hero image that explains the multi-repo Explorer workflow at a glance.

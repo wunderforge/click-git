@@ -48,6 +48,8 @@ Check public docs:
 - `CONTRIBUTING.md`
 - `media/hero.png`
 - `media/demo.gif`
+- `media/commands/contact-sheet-all-commands.png`
+- `media/commands/01-stage-folder.png` through `media/commands/08-pull-nested-repos.png`
 - `media/screenshot-context-menu.png`
 - `media/screenshot-stage-progress.png`
 

@@ -12,7 +12,22 @@ Click Git is a small VS Code extension for people who live inside big workspaces
 
 ![Click Git demo](media/demo.gif)
 
-## See It In Action
+## Every Command, Scoped To The Folder You Clicked
+
+![Click Git command overview](media/commands/contact-sheet-all-commands.png)
+
+| Command | What It Does |
+| --- | --- |
+| ![Stage Folder](media/commands/01-stage-folder.png) | Stage modified, deleted, and new files under the selected folder only. |
+| ![Unstage Folder](media/commands/02-unstage-folder.png) | Unstage the selected folder without touching unrelated staged work. |
+| ![Commit Folder](media/commands/03-commit-folder.png) | Commit the clicked folder with a message prompt inside VS Code. |
+| ![Restore Folder](media/commands/04-restore-folder.png) | Restore tracked changes in the folder while keeping untracked files. |
+| ![Status Folder](media/commands/05-status-folder.png) | Inspect folder-scoped status in the `Click Git` output channel. |
+| ![Diff Folder](media/commands/06-diff-folder.png) | Review diffs for the selected folder instead of the whole repo. |
+| ![Pull Repo](media/commands/07-pull-repo.png) | Pull the owning repository from any folder inside it. |
+| ![Pull Nested Repos](media/commands/08-pull-nested-repos.png) | Pull clean nested repositories under a parent folder and summarize the rest. |
+
+## Real VS Code Proof
 
 Right-click the folder you are already looking at, then run the Git action in place.
 

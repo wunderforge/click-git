@@ -8,3 +8,5 @@ demo-workspace/
 *.vsix
 npm-debug.log*
 *.log
+media/preview*/
+media/final-preview*/

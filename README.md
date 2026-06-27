@@ -2,9 +2,9 @@
 
 Turn VS Code Explorer into a folder-aware Git control surface.
 
-Click Git is built for workspaces that look like small cities: repos, notes, prototypes, client work, side projects, and half-finished ideas living under one parent folder.
+Click Git is for workspaces with many repos, and repos with many folders. Right-click the folder your attention is already on, then stage, restore, diff, commit, pull, or push from there.
 
-When your attention is already on a folder, Git should be there too. No terminal detour. No `cd` archaeology. No checking the same path twice just to stage, restore, diff, commit, pull, or push the thing in front of you.
+No terminal detour. No `cd` archaeology. No rebuilding the same pathspec by hand.
 
 Right-click a folder. Run the Git command you meant.
 

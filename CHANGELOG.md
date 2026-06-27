@@ -2,6 +2,10 @@
 
 All notable changes to Click Git will be documented in this file.
 
+## 0.0.7
+
+- Tightened README and Marketplace opening copy to cover both multi-repo workspaces and folder-heavy single repos.
+
 ## 0.0.6
 
 - Added `Click Git: Push Repo` as an upstream-based repository-scoped command.

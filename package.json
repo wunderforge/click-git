@@ -2,20 +2,15 @@
   "name": "click-git",
   "displayName": "Click Git",
   "description": "Right-click any folder in VS Code to stage, commit, restore, diff, pull, or push the right Git repo.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "publisher": "wunderforge",
   "license": "MIT",
   "icon": "media/icon.png",
   "keywords": [
-    "git",
-    "folder",
-    "explorer",
-    "context menu",
-    "multi repo",
-    "monorepo",
-    "knowledge base",
-    "workspace",
-    "source control",
+    "git-shortcut",
+    "one-click",
+    "git-workflow",
+    "commit",
     "push"
   ],
   "homepage": "https://github.com/wunderforge/click-git#readme",
@@ -30,7 +25,7 @@
     "vscode": "^1.95.0"
   },
   "categories": [
-    "Other"
+    "SCM Providers"
   ],
   "capabilities": {
     "untrustedWorkspaces": {
